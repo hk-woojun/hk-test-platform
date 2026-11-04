@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>이번 주 테스트</title>
+<style>
+  :root{--bg:#f4f5f7;--card:#fff;--ink:#111827;--muted:#6b7280;--line:#e5e7eb;--brand:#2563eb;--brand2:#dbeafe;--accent:#f59e0b}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif;-webkit-font-smoothing:antialiased}
+  .phone{max-width:420px;margin:0 auto;min-height:100vh;background:var(--card);display:flex;flex-direction:column}
+  header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line)}
+  header .logo{font-weight:800;letter-spacing:-.02em}
+  header .logo span{color:var(--brand)}
+  header small{color:var(--muted)}
+  main{flex:1;padding:20px 18px 32px}
+  .screen{display:none}.screen.on{display:block}
+  .hero{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;border-radius:18px;padding:26px 22px}
+  .hero .tag{display:inline-block;font-size:12px;background:rgba(255,255,255,.18);padding:4px 10px;border-radius:999px;margin-bottom:12px}
+  .hero h1{margin:0 0 8px;font-size:26px;line-height:1.25;letter-spacing:-.02em}
+  .hero p{margin:0;opacity:.9;font-size:14px;line-height:1.5}
+  .meta{display:flex;gap:14px;margin:16px 0 6px;color:var(--muted);font-size:13px}
+  .btn{display:block;width:100%;border:0;border-radius:12px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;background:var(--brand);color:#fff}
+  .btn.ghost{background:var(--brand2);color:var(--brand)}
+  .btn+.btn{margin-top:10px}
+  .trend{margin-top:22px;border:1px solid var(--line);border-radius:14px;padding:14px}
+  .trend h3{margin:0 0 8px;font-size:14px}
+  .trend li{font-size:13px;color:var(--muted);margin:4px 0}
+  .progress{height:6px;background:var(--line);border-radius:999px;overflow:hidden;margin-bottom:18px}
+  .progress i{display:block;height:100%;background:var(--brand);width:0;transition:width .3s}
+  .qnum{font-size:13px;color:var(--brand);font-weight:700}
+  .q{font-size:20px;font-weight:800;line-height:1.35;margin:6px 0 20px;letter-spacing:-.01em}
+  .opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:16px;font-size:15px;margin-bottom:10px;cursor:pointer;line-height:1.4}
+  .opt:hover{border-color:var(--brand);background:#f8fbff}
+  .result-card{border-radius:20px;padding:24px 20px;background:linear-gradient(160deg,#fff7ed,#fde68a);text-align:center;border:1px solid #fcd34d}
+  .result-card .char{font-size:72px;line-height:1}
+  .result-card .rare{display:inline-block;font-size:12px;background:#111827;color:#fff;padding:4px 10px;border-radius:999px;margin-top:10px}
+  .result-card h2{margin:12px 0 6px;font-size:24px;letter-spacing:-.02em}
+  .result-card p{margin:0;font-size:14px;line-height:1.55;color:#374151}
+  .box{margin-top:16px;border:1px solid var(--line);border-radius:14px;padding:16px}
+  .box h3{margin:0 0 10px;font-size:14px;color:var(--muted);font-weight:700}
+  .data{font-size:14px;line-height:1.55}
+  .data b{color:var(--brand)}
+  .art a{display:block;color:var(--ink);text-decoration:none;font-size:14px;padding:10px 0;border-top:1px solid var(--line);line-height:1.4}
+  .art a:first-child{border-top:0;padding-top:0}
+  .art small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+  .dist div{display:flex;align-items:center;font-size:13px;margin:6px 0;gap:8px}
+  .dist span{width:92px;color:var(--muted)}
+  .dist i{flex:1;height:10px;background:var(--line);border-radius:999px;overflow:hidden}
+  .dist i b{display:block;height:100%;background:var(--brand)}
+  .dist em{width:34px;text-align:right;font-style:normal}
+  .dist .me span{color:var(--brand);font-weight:700}
+  .dist .me i b{background:var(--accent)}
+  .share{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:16px}
+  .share button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 6px;font-size:13px;cursor:pointer}
+  .share button b{display:block;font-size:20px;margin-bottom:4px}
+  .list h2{font-size:18px;margin:4px 0 14px;letter-spacing:-.02em}
+  .list .sub{color:var(--muted);font-size:13px;margin:-8px 0 14px}
+  .item{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px;cursor:pointer;background:#fff}
+  .item:hover{border-color:var(--brand)}
+  .item .ic{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;flex:none}
+  .item b{display:block;font-size:15px;letter-spacing:-.01em;margin-bottom:3px}
+  .item small{color:var(--muted);font-size:12px}
+  .item .badge{margin-left:auto;flex:none;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--brand2);color:var(--brand)}
+  .item .badge.hot{background:#fef2f2;color:#b91c1c}
+  .item .badge.done{background:#f3f4f6;color:#6b7280}
+  footer{padding:14px 18px;color:#9ca3af;font-size:11px;text-align:center;border-top:1px solid var(--line)}
+  .toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 16px;border-radius:999px;font-size:13px;display:none}
+</style>
+</head>
+<body>
+<div class="phone">
+  <header><div class="logo" style="cursor:pointer" onclick="show('s-home')">한경 <span>성향테스트</span></div><small>프로토타입</small></header>
+  <main>
+
+    <!-- 테스트 목록 -->
+    <section class="screen on list" id="s-home">
+      <h2>이번 주 테스트</h2>
+      <p class="sub">11월 1주 · 이번 주 기사에서 뽑은 트렌드 4개. 정답 없음, 90초, 로그인 없음.</p>
+      <div class="item" onclick="openTest('salary')"><div class="ic" style="background:#fef3c7">💸</div><div><b>당신의 월급 증발 유형</b><small>12,480명 참여 · 물가 기사 급증</small></div><span class="badge">NEW</span></div>
+      <div class="item" onclick="openTest('dinner')"><div class="ic" style="background:#dbeafe">🍻</div><div><b>회식 자리 생존 유형</b><small>9,310명 참여 · 연말 회식 기사</small></div><span class="badge">NEW</span></div>
+      <div class="item" onclick="openTest('kospi')"><div class="ic" style="background:#dcfce7">📈</div><div><b>코스피 4000 멘탈 유형</b><small>15,760명 참여 · 증시 기사 급증</small></div><span class="badge">NEW</span></div>
+      <div class="item" onclick="openTest('exam')"><div class="ic" style="background:#ede9fe">✏️</div><div><b>수능 전날의 나 유형</b><small>4,120명 참여 · 수능 시즌</small></div><span class="badge">NEW</span></div>
+      <h2 style="margin-top:26px">지난 테스트</h2>
+      <p class="sub">지난 주 테스트도 계속 풀 수 있어요.</p>
+      <div class="item" onclick="toast('샘플: 테스트 화면 동일')"><div class="ic" style="background:#fee2e2">📉</div><div><b>폭락장 멘탈 유형</b><small>10월 5주 · 31,200명</small></div><span class="badge done">지난 주</span></div>
+      <div class="item" onclick="toast('샘플: 테스트 화면 동일')"><div class="ic" style="background:#fce7f3">🧾</div><div><b>연말정산 성향 유형</b><small>10월 5주 · 8,110명</small></div><span class="badge done">지난 주</span></div>
+      <div class="item" onclick="toast('샘플: 테스트 화면 동일')"><div class="ic" style="background:#f3f4f6">📊</div><div><b>당신을 종목으로 표현하면</b><small>10월 4주 · 6,900명</small></div><span class="badge done">지난 주</span></div>
+      <button class="btn ghost" style="margin-top:6px" onclick="toast('전체 아카이브')">지난 테스트 더 보기</button>
+    </section>
+
+    <!-- 시작 -->
+    <section class="screen" id="s-intro">
+      <div class="hero" id="hero">
+        <span class="tag">이번 주 테스트 · 11월 1주</span>
+        <h1 id="i-title"></h1>
+        <p id="i-desc"></p>
+      </div>
+      <div class="meta"><span>⏱ 90초</span><span>📝 8문항</span><span id="i-cnt"></span></div>
+      <button class="btn" onclick="start()">테스트 시작</button>
+      <div class="trend">
+        <h3>이 테스트가 나온 이유</h3>
+        <ul style="margin:0;padding-left:18px" id="i-why"></ul>
+      </div>
+    </section>
+
+    <!-- 문항 -->
+    <section class="screen" id="s-quiz">
+      <div class="progress"><i id="bar"></i></div>
+      <div class="qnum" id="qnum"></div>
+      <div class="q" id="qtext"></div>
+      <div id="opts"></div>
+    </section>
+
+    <!-- 결과 -->
+    <section class="screen" id="s-result">
+      <div class="result-card">
+        <div class="char" id="r-char"></div>
+        <span class="rare" id="r-rare"></span>
+        <h2 id="r-name"></h2>
+        <p id="r-desc"></p>
+      </div>
+      <div class="box"><h3>관련 한경 기사</h3><div class="art" id="r-art"></div></div>
+      <div class="box"><h3>참여자 유형 분포</h3><div class="dist" id="r-dist"></div></div>
+      <div class="share">
+        <button onclick="toast('인스타 스토리용 카드 이미지 생성')"><b>📸</b>인스타</button>
+        <button onclick="toast('카카오톡 공유 카드 전송')"><b>💬</b>카카오톡</button>
+        <button onclick="toast('링크 복사됨')"><b>🔗</b>링크 복사</button>
+      </div>
+      <button class="btn ghost" style="margin-top:14px" onclick="toast('친구 결과 링크 생성')">친구와 궁합 보기</button>
+      <button class="btn ghost" onclick="i=0;score={};start()">다시 하기</button>
+      <button class="btn ghost" onclick="show('s-home')">다른 테스트 보기</button>
+    </section>
+
+  </main>
+  <footer>한국경제 · 본 테스트는 정답이 없으며 투자 권유가 아닙니다</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const TESTS = {
+salary:{
+  title:'당신의<br>월급 증발 유형은?', desc:'월급 들어오자마자 사라지는 이유, 사람마다 다릅니다. 8문항으로 알아보는 나의 소비 성향.', cnt:'12,480명 참여', grad:'linear-gradient(135deg,#1e3a8a,#2563eb)', card:'linear-gradient(160deg,#fff7ed,#fde68a)',
+  why:['이번 주 "월급·물가" 관련 기사 41건, 평소의 3.2배','"월급 빼고 다 올랐다" 기사 댓글 반응 상위'],
+  types:{
+    A:{char:'🔥',name:'텅장 직진형',desc:'들어오면 바로 쓴다. 지금의 행복이 먼저. 후회는 다음 달의 나에게.'},
+    B:{char:'🧾',name:'고정비 압사형',desc:'쓴 게 없는데 없다. 월세·구독·보험이 먼저 가져간다.'},
+    C:{char:'🍜',name:'배달 성실납부형',desc:'큰돈은 안 쓴다. 대신 매일 조금씩, 꾸준히, 배달앱에.'},
+    D:{char:'📈',name:'존버 투자형',desc:'월급은 통장을 스치고 계좌로 간다. 잔고는 없지만 평가손익은 있다.'},
+    E:{char:'🎁',name:'관계 유지비형',desc:'경조사, 선물, 모임. 사람에게 쓰는 돈이 아깝지 않다.'},
+    F:{char:'🧊',name:'냉동 저축형',desc:'월급의 절반을 먼저 얼린다. 쓸 돈이 없어서 못 쓴다.'},
+    G:{char:'🛍️',name:'보상소비 폭발형',desc:'평소엔 아낀다. 그러다 힘든 날, 한 번에 터진다.'},
+    H:{char:'🤷',name:'행방불명형',desc:'어디에 썼는지 모른다. 가계부를 켜본 적도 없다.'}
+  },
+  dist:{A:14,B:19,C:16,D:11,E:8,F:9,G:13,H:10},
+  articles:[
+    {t:'"월급 빼고 다 올랐다"…10월 소비자물가 3.4% 상승',s:'경제 · 11월 3일'},
+    {t:'2030 "고정비가 월급의 절반"…구독료·월세에 가계 압박',s:'사회 · 11월 2일'},
+    {t:'급여일 직후 소비 몰림…카드사 데이터로 본 월급 사이클',s:'금융 · 11월 1일'}],
+  q:[
+    {q:'월급이 들어왔다. 가장 먼저 하는 일은?',o:[['통장 잔고를 보고 흐뭇해한다','F'],['장바구니에 담아둔 걸 결제한다','A'],['자동이체 빠져나가는 걸 지켜본다','B'],['증권 앱을 연다','D']]},
+    {q:'이번 달 가장 큰 지출 항목을 고른다면?',o:[['월세·관리비·구독료','B'],['친구 생일, 결혼식 축의금','E'],['뭔지 모르겠다','H'],['주식·코인·ETF','D']]},
+    {q:'퇴근길, 오늘따라 유난히 힘들었다.',o:[['배달앱을 켠다. 오늘은 치킨이다','C'],['쇼핑앱을 켠다. 오늘은 나를 위해','G'],['그냥 집에 간다. 돈 쓸 힘도 없다','F'],['친구를 부른다. 한잔 하자','E']]},
+    {q:'가계부, 써본 적 있어?',o:[['매일 쓴다','F'],['앱 깔았는데 안 연다','H'],['카드 내역이 곧 가계부','C'],['쓸 게 없어서 안 쓴다. 다 고정비','B']]},
+    {q:'갑자기 보너스 100만 원이 생겼다.',o:[['바로 사고 싶던 거 산다','A'],['절반은 투자, 절반은 저축','D'],['일단 넣어두고 생각','F'],['그동안 못 산 거 한 번에','G']]},
+    {q:'월급날 1주일 뒤 통장 잔고는?',o:[['벌써 반 이하','A'],['거의 그대로. 쓸 데가 없다','F'],['모르겠다. 안 본다','H'],['생각보다 줄었는데 이유를 모르겠다','C']]},
+    {q:'친구가 "이번 주말 뭐 해?"라고 물었다.',o:[['밥 사줄게, 나와','E'],['집에서 배달 시키고 쉴래','C'],['쇼핑 가자','G'],['장 보는 날이라 안 돼','D']]},
+    {q:'돈이 사라지는 가장 큰 이유는 결국…',o:[['내 손이 빠르다','A'],['세상이 비싸다','B'],['사람 때문이다','E'],['모르겠다, 진짜로','H']]}
+  ]
+},
+dinner:{
+  title:'회식 자리<br>생존 유형은?', desc:'연말 회식 시즌. 당신은 그 자리에서 어떻게 살아남는 사람인가요?', cnt:'9,310명 참여', grad:'linear-gradient(135deg,#7c2d12,#ea580c)', card:'linear-gradient(160deg,#fff1f2,#fecaca)',
+  why:['이번 주 "회식·송년회" 관련 기사 23건, 평소의 2.7배','"회식도 업무" 기사 댓글 2,860개, 직장인 반응 집중'],
+  types:{
+    A:{char:'🎤',name:'분위기 메이커형',desc:'회식의 주인공. 건배사, 게임, 2차 장소 섭외까지 당신 손에.'},
+    B:{char:'🚪',name:'출구 전략형',desc:'1차에서 자연스럽게 사라진다. 아무도 언제 갔는지 모른다.'},
+    C:{char:'🍖',name:'고기 집중형',desc:'말보다 젓가락. 오늘의 목표는 법인카드로 먹는 한우.'},
+    D:{char:'📱',name:'조용한 관찰형',desc:'구석 자리, 적당한 리액션, 가끔 폰. 존재감 없이 끝까지 있는다.'},
+    E:{char:'🍻',name:'2차 선봉형',desc:'진짜는 지금부터. 1차는 워밍업이었다.'},
+    F:{char:'🧾',name:'법카 수호형',desc:'계산대 앞에서 가장 긴장한다. 영수증은 당신 것.'},
+    G:{char:'🤝',name:'상사 밀착형',desc:'회식은 네트워킹의 기회. 부장님 옆자리는 내 자리.'},
+    H:{char:'🏃',name:'칼퇴 수호형',desc:'애초에 안 간다. 핑계는 이미 월요일에 준비됐다.'}
+  },
+  dist:{A:9,B:17,C:13,D:21,E:7,F:6,G:8,H:19},
+  articles:[
+    {t:'"회식도 업무"…MZ 직장인 61% "불참하면 눈치 보여"',s:'사회 · 11월 3일'},
+    {t:'송년회 예약 전년比 18%↑…연말 회식 다시 살아났다',s:'산업 · 11월 2일'},
+    {t:'회식비 지원 늘리는 기업들…"1인당 5만 원 상한"',s:'경제 · 11월 1일'}],
+  q:[
+    {q:'회식 공지가 떴다. 첫 반응은?',o:[['오늘 뭐 먹지','C'],['몇 시에 끝나지','B'],['빠질 핑계를 검색한다','H'],['2차 장소를 미리 물색한다','E']]},
+    {q:'자리 배치. 당신의 위치는?',o:[['부장님 옆','G'],['출구 근처','B'],['동기들 사이','A'],['구석 자리, 벽 쪽','D']]},
+    {q:'건배사를 시켰다.',o:[['준비된 멘트가 있다','A'],['짧게 치고 빠진다','B'],['옆 사람에게 넘긴다','D'],['부장님 말씀 인용으로 시작','G']]},
+    {q:'고기가 나왔다.',o:[['집게는 내가 잡는다','C'],['누가 구워주길 기다린다','D'],['상사 접시부터 챙긴다','G'],['이미 배부르다, 안주보다 술','E']]},
+    {q:'1차가 끝나간다.',o:[['"2차 가시죠!"','E'],['조용히 코트를 입는다','B'],['계산서를 확인한다','F'],['남은 고기를 마저 먹는다','C']]},
+    {q:'부장님이 "요즘 힘든 거 없어?"라고 물었다.',o:[['준비된 답변이 있다','G'],['"없습니다!" 하고 잔을 든다','A'],['웃으면서 넘긴다','D'],['그 틈에 화장실 간다','B']]},
+    {q:'회식 다음 날 아침.',o:[['어제 분위기 좋았다고 톡 돌린다','A'],['어제 먹은 게 떠오른다','C'],['영수증 정리부터','F'],['애초에 안 갔다','H']]},
+    {q:'회식을 한 단어로 하면?',o:[['기회','G'],['노동','H'],['식사','C'],['탈출','B']]}
+  ]
+},
+kospi:{
+  title:'코스피 4000,<br>당신의 멘탈 유형은?', desc:'지수가 사상 최고치를 찍은 이번 주. 계좌 앞에서 당신은 어떤 사람인가요?', cnt:'15,760명 참여', grad:'linear-gradient(135deg,#14532d,#16a34a)', card:'linear-gradient(160deg,#f0fdf4,#bbf7d0)',
+  why:['이번 주 "코스피 4000" 관련 기사 58건, 평소의 2.1배','관련 기사 조회 210만, 댓글 9,300개로 이번 주 최다'],
+  types:{
+    A:{char:'🚀',name:'풀매수 돌격형',desc:'오를 때 사야 오른다. 신고가는 신호다.'},
+    B:{char:'🧘',name:'무념무상 존버형',desc:'안 본다. 안 판다. 10년 뒤에 본다.'},
+    C:{char:'💸',name:'익절 칼퇴형',desc:'4000 찍었으면 됐다. 수익은 실현해야 내 돈.'},
+    D:{char:'😰',name:'고점 공포형',desc:'4000이면 꼭지 아닌가. 들어가면 내가 꼭지다.'},
+    E:{char:'🔍',name:'소외주 탐색형',desc:'대형주는 이미 올랐다. 아직 안 오른 걸 찾는다.'},
+    F:{char:'🙈',name:'계좌 봉인형',desc:'주식 있는 건 아는데 안 연 지 오래. 지금 보면 안 될 것 같다.'},
+    G:{char:'📺',name:'뉴스 중독형',desc:'사지도 팔지도 않지만 기사는 다 읽는다. 댓글도 쓴다.'},
+    H:{char:'🏠',name:'관망 세입자형',desc:'주식은 남의 일. 근데 집값은 왜 오르는지 궁금하다.'}
+  },
+  dist:{A:11,B:18,C:14,D:16,E:9,F:12,G:10,H:10},
+  articles:[
+    {t:'코스피 사상 첫 4000 돌파…외국인 5일 연속 순매수',s:'증권 · 11월 3일'},
+    {t:'개미 "지금이라도 탈까"…신규 계좌 개설 급증',s:'증권 · 11월 2일'},
+    {t:'"고점 신호 vs 상승 초입"…증권사 전망 엇갈려',s:'경제 · 11월 1일'}],
+  q:[
+    {q:'코스피 4000 돌파 속보를 봤다.',o:[['바로 증권 앱을 연다','A'],['그냥 넘긴다, 안 본다','B'],['내 종목 수익률을 계산한다','C'],['"이제 떨어지겠네"','D']]},
+    {q:'보유 종목이 15% 올랐다.',o:[['더 산다','A'],['절반 판다','C'],['그대로 둔다','B'],['안 보고 있어서 모른다','F']]},
+    {q:'친구가 "요즘 뭐 사?"라고 물었다.',o:[['아직 안 오른 종목 리스트가 있다','E'],['"지금 들어가면 늦어"','D'],['기사 링크를 보내준다','G'],['"주식 안 해"','H']]},
+    {q:'하루에 증권 앱을 몇 번 열까?',o:[['10번 이상','A'],['한 번 정도','C'],['거의 안 연다','B'],['깔려만 있다','F']]},
+    {q:'지수가 3% 급락했다.',o:[['줍줍 타이밍','A'],['다 팔까 고민','D'],['뉴스를 20개 읽는다','G'],['모르고 지나갔다','F']]},
+    {q:'주식 얘기가 나오는 자리에서 당신은?',o:[['전망을 말한다','G'],['종목을 추천한다','E'],['듣기만 한다','B'],['화제를 돌린다','H']]},
+    {q:'투자 목표 기간은?',o:[['다음 주','C'],['10년','B'],['정해둔 적 없음','F'],['목표가 없다, 안 하니까','H']]},
+    {q:'4000 다음은?',o:[['5000','A'],['3500','D'],['모른다, 그래서 안 판다','B'],['남의 일','H']]}
+  ]
+},
+exam:{
+  title:'수능 전날의<br>나는 어떤 유형?', desc:'수능 D-10. 그때의 당신, 혹은 지금 시험 앞의 당신은 어떤 사람인가요?', cnt:'4,120명 참여', grad:'linear-gradient(135deg,#4c1d95,#7c3aed)', card:'linear-gradient(160deg,#f5f3ff,#ddd6fe)',
+  why:['이번 주 "수능" 관련 기사 19건, 평소의 1.9배','수능 시즌 캘린더 테마, 세대 폭이 넓은 공감 소재'],
+  types:{
+    A:{char:'📚',name:'막판 벼락치기형',desc:'전날이 제일 공부가 잘된다. 밤새고 간다.'},
+    B:{char:'😴',name:'일찍 자는 평정형',desc:'할 만큼 했다. 9시에 잔다.'},
+    C:{char:'🍫',name:'찹쌀떡 수집형',desc:'엿, 떡, 초콜릿. 받은 게 너무 많아 가방이 무겁다.'},
+    D:{char:'🎧',name:'노래 한 곡 반복형',desc:'공부는 안 되고 플레이리스트만 돈다.'},
+    E:{char:'📝',name:'준비물 100번 확인형',desc:'수험표, 신분증, 샤프. 자다 깨서 또 본다.'},
+    F:{char:'🙏',name:'기도 올인형',desc:'이제 하늘에 맡긴다. 부모님은 절에, 나는 침대에.'},
+    G:{char:'🤷',name:'"뭐 어떻게든 되겠지"형',desc:'긴장 안 된다. 친구들이 더 걱정한다.'},
+    H:{char:'🧠',name:'망상 시뮬레이션형',desc:'1교시 망하면? 이미 머릿속에서 10번 봤다.'}
+  },
+  dist:{A:15,B:12,C:9,D:11,E:16,F:8,G:10,H:19},
+  articles:[
+    {t:'수능 D-10, 수험생 컨디션 관리법…"생체리듬 맞춰라"',s:'사회 · 11월 3일'},
+    {t:'수능 시즌 떡·초콜릿 매출 3배…유통가 특수',s:'유통 · 11월 2일'},
+    {t:'"시험 불안 역대 최고"…청소년 정신건강 조사',s:'사회 · 10월 31일'}],
+  q:[
+    {q:'수능 전날 저녁 8시. 당신은?',o:[['책상 앞, 아직 볼 게 남았다','A'],['이미 씻고 누웠다','B'],['가방 싸는 중, 세 번째','E'],['이어폰 끼고 멍','D']]},
+    {q:'친구에게 받은 선물은?',o:[['찹쌀떡 다섯 개','C'],['"잘 봐" 한마디','G'],['같이 울었다','H'],['안 받았다, 연락 끊고 공부','A']]},
+    {q:'잠들기 직전 떠오르는 생각은?',o:[['1교시 망하면 어쩌지','H'],['수험표 어디 뒀더라','E'],['아무 생각 없음','B'],['내일 끝나면 뭐 하지','G']]},
+    {q:'부모님이 "괜찮아?"라고 물었다.',o:[['"괜찮아" (안 괜찮음)','H'],['"응" (진짜 괜찮음)','G'],['"떡 더 있어?"','C'],['대답 못 함, 암기 중','A']]},
+    {q:'당일 아침 알람은?',o:[['5개 맞춰 둠','E'],['한 개, 바로 일어남','B'],['밤새서 알람 필요 없음','A'],['부모님이 깨워줄 것','F']]},
+    {q:'시험장 가는 길에서?',o:[['오답노트 본다','A'],['노래 듣는다','D'],['기도한다','F'],['수험표 또 확인','E']]},
+    {q:'가장 두려운 상황은?',o:[['수험표를 안 가져옴','E'],['아는 문제가 안 떠오름','H'],['없다','G'],['졸음','A']]},
+    {q:'수능이 끝나면?',o:[['바로 잔다','B'],['노래방','D'],['답 맞춰본다','H'],['남은 떡 먹는다','C']]}
+  ]
+}
+};
+let T=null, i=0, score={};
+function openTest(id){
+  T=TESTS[id]; i=0; score={};
+  document.getElementById('hero').style.background=T.grad;
+  document.getElementById('i-title').innerHTML=T.title;
+  document.getElementById('i-desc').textContent=T.desc;
+  document.getElementById('i-cnt').textContent='👥 '+T.cnt;
+  document.getElementById('i-why').innerHTML=T.why.map(w=>`<li>${w}</li>`).join('');
+  show('s-intro');
+}
+function start(){ show('s-quiz'); render(); }
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); document.getElementById(id).classList.add('on'); window.scrollTo(0,0); }
+function render(){
+  const q=T.q[i];
+  document.getElementById('bar').style.width=((i)/T.q.length*100)+'%';
+  document.getElementById('qnum').textContent=`Q${i+1} / ${T.q.length}`;
+  document.getElementById('qtext').textContent=q.q;
+  document.getElementById('opts').innerHTML=q.o.map(o=>`<button class="opt" onclick="pick('${o[1]}')">${o[0]}</button>`).join('');
+}
+function pick(t){ score[t]=(score[t]||0)+1; i++; if(i<T.q.length) render(); else result(); }
+function result(){
+  const best=Object.keys(T.types).sort((a,b)=>(score[b]||0)-(score[a]||0))[0];
+  const r=T.types[best];
+  document.querySelector('.result-card').style.background=T.card;
+  document.getElementById('r-char').textContent=r.char;
+  document.getElementById('r-name').textContent=r.name;
+  document.getElementById('r-desc').textContent=r.desc;
+  document.getElementById('r-rare').textContent=`참여자의 ${T.dist[best]}%가 이 유형`;
+  document.getElementById('r-art').innerHTML=T.articles.map(a=>`<a href="#" onclick="toast('기사 페이지로 이동');return false">${a.t}<small>${a.s}</small></a>`).join('');
+  document.getElementById('r-dist').innerHTML=Object.keys(T.types).map(k=>`<div class="${k===best?'me':''}"><span>${T.types[k].name}</span><i><b style="width:${T.dist[k]*4}%"></b></i><em>${T.dist[k]}%</em></div>`).join('');
+  show('s-result');
+}
+function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',1500); }
+</script>
+</body>
+</html>

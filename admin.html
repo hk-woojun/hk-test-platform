@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>성향테스트 관리자</title>
+<style>
+  :root{--bg:#f3f4f6;--card:#fff;--ink:#111827;--muted:#6b7280;--line:#e5e7eb;--brand:#2563eb;--brand2:#eff6ff;--ok:#16a34a;--warn:#d97706;--bad:#dc2626}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif;font-size:14px}
+  .app{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+  nav{background:#111827;color:#d1d5db;padding:20px 14px}
+  nav .logo{color:#fff;font-weight:800;font-size:16px;padding:6px 10px 20px}
+  nav .logo span{color:#60a5fa}
+  nav a{display:block;padding:10px 12px;border-radius:8px;color:#d1d5db;text-decoration:none;margin-bottom:2px;cursor:pointer}
+  nav a:hover{background:#1f2937}
+  nav a.on{background:#2563eb;color:#fff}
+  nav .sec{font-size:11px;color:#6b7280;padding:16px 12px 6px;text-transform:uppercase;letter-spacing:.05em}
+  main{padding:28px 32px}
+  .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+  .top h1{margin:0;font-size:22px;letter-spacing:-.02em}
+  .top small{color:var(--muted)}
+  .page{display:none}.page.on{display:block}
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .kpi .l{color:var(--muted);font-size:12px}
+  .kpi .v{font-size:26px;font-weight:800;margin:4px 0 2px;letter-spacing:-.02em}
+  .kpi .d{font-size:12px}.up{color:var(--ok)}.dn{color:var(--bad)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}
+  .card h2{margin:0 0 14px;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+  .card h2 small{font-weight:400;color:var(--muted)}
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;font-size:12px;color:var(--muted);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
+  td{padding:10px;border-bottom:1px solid #f1f2f4;vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700}
+  .p-b{background:#eff6ff;color:#1d4ed8}.p-g{background:#f0fdf4;color:#15803d}.p-y{background:#fffbeb;color:#b45309}.p-r{background:#fef2f2;color:#b91c1c}.p-gr{background:#f3f4f6;color:#4b5563}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 12px;font-size:13px;cursor:pointer;color:var(--ink)}
+  .btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+  .btn.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+  .btn.sm{padding:4px 9px;font-size:12px}
+  .btn+.btn{margin-left:6px}
+  .arts a{display:block;color:var(--brand);text-decoration:none;font-size:12px;margin-top:3px}
+  .score{font-weight:800;font-size:18px}
+  .cand{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .cand .card{margin:0;display:flex;flex-direction:column}
+  .cand h3{margin:6px 0 4px;font-size:16px;letter-spacing:-.01em}
+  .cand .why{color:var(--muted);font-size:12px;margin-bottom:10px;line-height:1.5}
+  .cand .arts{flex:1;border-top:1px solid var(--line);padding-top:8px;margin-bottom:12px}
+  .bar{height:6px;background:var(--line);border-radius:999px;overflow:hidden;margin:6px 0 10px}
+  .bar b{display:block;height:100%;background:var(--brand)}
+  .check li{list-style:none;padding:7px 0;border-bottom:1px solid #f1f2f4;display:flex;justify-content:space-between}
+  .check ul{padding:0;margin:0}
+  .check .ok::before{content:'✓ ';color:var(--ok);font-weight:700}
+  .check .warn::before{content:'! ';color:var(--warn);font-weight:700}
+  .q{padding:10px 12px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px}
+  .q b{display:block;margin-bottom:4px}
+  .q span{display:inline-block;font-size:12px;color:var(--muted);margin-right:10px}
+  .types{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .types div{border:1px solid var(--line);border-radius:8px;padding:10px;font-size:12px}
+  .types div b{display:block;font-size:13px;margin-bottom:2px}
+  .types em{font-style:normal;font-size:20px;display:block;margin-bottom:4px}
+  .spark{display:flex;align-items:flex-end;gap:3px;height:36px}
+  .spark i{flex:1;background:#bfdbfe;border-radius:2px 2px 0 0}
+  .spark i.hi{background:var(--brand)}
+  .cont{border-top:1px dashed var(--line);margin-top:10px;padding-top:10px;font-size:12px}
+  .cont .warn{color:var(--warn);font-weight:700;margin-bottom:6px}
+  .cont label{display:flex;gap:6px;align-items:flex-start;padding:5px 0;cursor:pointer;line-height:1.4}
+  .cont label input{margin-top:2px}
+  .cont small{color:var(--muted)}
+  .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+  textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit;font-size:13px}
+  .toast{position:fixed;right:24px;bottom:24px;background:#111827;color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;display:none}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav>
+    <div class="logo">성향테스트 <span>관리자</span></div>
+    <div class="sec">운영</div>
+    <a class="on" onclick="go('dash',this)">대시보드</a>
+    <a onclick="go('trend',this)">트렌드 수집</a>
+    <a onclick="go('theme',this)">테마 후보 <span class="pill p-b" style="float:right">5</span></a>
+    <a onclick="go('gen',this)">생성 · 검수 · 승인 <span class="pill p-y" style="float:right">1</span></a>
+    <a onclick="go('pub',this)">발행 관리</a>
+    <div class="sec">분석</div>
+    <a onclick="go('perf',this)">성과</a>
+    <div class="sec">설정</div>
+    <a onclick="toast('상시 테마 20개 관리 화면')">상시 테마 뱅크</a>
+    <a onclick="toast('제외 키워드·금칙어 관리 화면')">제외 규칙</a>
+  </nav>
+  <main>
+
+    <!-- 대시보드 -->
+    <div class="page on" id="dash">
+      <div class="top"><h1>대시보드</h1><small>2026-11-04 (수) 09:12 · 오늘 수집 완료</small></div>
+      <div class="kpis">
+        <div class="kpi"><div class="l">이번 주 발행</div><div class="v">4건</div><div class="d">11월 1주 묶음 · 월 09:00</div></div>
+        <div class="kpi"><div class="l">완료율</div><div class="v">74%</div><div class="d up">▲ 3%p 지난주</div></div>
+        <div class="kpi"><div class="l">공유 클릭률</div><div class="v">12.1%</div><div class="d up">▲ 1.4%p</div></div>
+        <div class="kpi"><div class="l">공유 링크 유입</div><div class="v">33%</div><div class="d up">▲ 5%p</div></div>
+        <div class="kpi"><div class="l">기사 클릭률</div><div class="v">18%</div><div class="d">결과 화면 → 기사</div></div>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h2>오늘 급상승 키워드 <small>최근 3일 기사 기준</small></h2>
+          <table>
+            <tr><th>키워드</th><th>기사</th><th>증가율</th><th>섹션</th></tr>
+            <tr><td><b>월급·물가</b></td><td>41건</td><td class="up">×3.2</td><td>경제·사회·금융</td></tr>
+            <tr><td><b>연말 회식</b></td><td>23건</td><td class="up">×2.7</td><td>사회·산업</td></tr>
+            <tr><td><b>코스피 4000</b></td><td>58건</td><td class="up">×2.1</td><td>증권·경제</td></tr>
+            <tr><td><b>수능 D-10</b></td><td>19건</td><td class="up">×1.9</td><td>사회·교육</td></tr>
+            <tr><td><b>먼작귀 팝업</b></td><td>9건</td><td class="up">×1.8</td><td>유통·문화</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h2>처리 대기</h2>
+          <table>
+            <tr><td><span class="pill p-y">승인 대기</span></td><td><b>회식 자리 생존 유형</b><br><small style="color:var(--muted)">자동 검수 통과 · 생성 08:40</small></td><td style="text-align:right"><button class="btn sm pri" onclick="go('gen',document.querySelectorAll('nav a')[3])">검토</button></td></tr>
+            <tr><td><span class="pill p-b">테마 선택</span></td><td><b>다음 주 후보 8개</b><br><small style="color:var(--muted)">월요일 오전 3~5개 선택 · 이어서 발행 후보 2</small></td><td style="text-align:right"><button class="btn sm" onclick="go('theme',document.querySelectorAll('nav a')[2])">보기</button></td></tr>
+            <tr><td><span class="pill p-gr">아카이브</span></td><td><b>10월 5주 테스트 2건</b><br><small style="color:var(--muted)">지난 테스트로 이동됨</small></td><td style="text-align:right"><button class="btn sm" onclick="go('pub',document.querySelectorAll('nav a')[4])">보기</button></td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h2>최근 발행 테스트 성과</h2>
+        <table>
+          <tr><th>테스트</th><th>발행</th><th>참여</th><th>완료율</th><th>공유 클릭</th><th>기사 클릭</th><th>상태</th></tr>
+          <tr><td><b>당신의 월급 증발 유형</b></td><td>11/03</td><td>12,480</td><td>76%</td><td>13.2%</td><td>21%</td><td><span class="pill p-g">발행 중</span></td></tr>
+          <tr><td><b>폭락장 멘탈 유형</b></td><td>10/27</td><td>31,200</td><td>71%</td><td>15.8%</td><td>24%</td><td><span class="pill p-g">발행 중</span></td></tr>
+          <tr><td><b>연말정산 성향 유형</b></td><td>10/27</td><td>8,110</td><td>69%</td><td>9.4%</td><td>12%</td><td><span class="pill p-gr">종료</span></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- 트렌드 -->
+    <div class="page" id="trend">
+      <div class="top"><h1>트렌드 수집</h1><small>출처: 한경 기사 · 최근 3일 2,314건 분석 · 매일 06:00 갱신</small></div>
+      <div class="card">
+        <h2>급상승 키워드 <small>직전 2주 평균 대비 기사 수 증가율 순</small></h2>
+        <table>
+          <tr><th>순위</th><th>키워드</th><th>기사 수 / 추이</th><th>증가율</th><th>조회·댓글</th><th>섹션 확산</th><th>근거 기사</th><th>상태</th></tr>
+          <tr><td>1</td><td><b>월급·물가</b></td><td>41건<div class="spark"><i style="height:20%"></i><i style="height:25%"></i><i style="height:30%"></i><i style="height:35%"></i><i style="height:55%"></i><i style="height:80%"></i><i class="hi" style="height:100%"></i></div></td><td class="up"><b>×3.2</b></td><td>98만 · 4,120</td><td>경제·사회·금융</td><td class="arts"><a href="#">"월급 빼고 다 올랐다"…10월 소비자물가 3.4%↑</a><a href="#">2030 "고정비가 월급의 절반"</a><a href="#">급여일 직후 소비 몰림…카드 데이터</a></td><td><span class="pill p-b">테마 후보</span></td></tr>
+          <tr><td>2</td><td><b>연말 회식</b></td><td>23건<div class="spark"><i style="height:10%"></i><i style="height:10%"></i><i style="height:20%"></i><i style="height:30%"></i><i style="height:45%"></i><i style="height:70%"></i><i class="hi" style="height:100%"></i></div></td><td class="up"><b>×2.7</b></td><td>42만 · 2,860</td><td>사회·산업</td><td class="arts"><a href="#">"회식도 업무"…MZ 직장인 61% "불참 눈치"</a><a href="#">송년회 예약 전년比 18%↑</a></td><td><span class="pill p-b">테마 후보</span></td></tr>
+          <tr><td>3</td><td><b>코스피 4000</b></td><td>58건<div class="spark"><i style="height:30%"></i><i style="height:30%"></i><i style="height:35%"></i><i style="height:40%"></i><i style="height:40%"></i><i style="height:60%"></i><i class="hi" style="height:100%"></i></div></td><td class="up"><b>×2.1</b></td><td>210만 · 9,300</td><td>증권·경제</td><td class="arts"><a href="#">코스피 사상 첫 4000 돌파</a><a href="#">개미 "지금이라도 탈까"…신규 계좌 급증</a></td><td><span class="pill p-b">테마 후보</span></td></tr>
+          <tr><td>4</td><td><b>수능 D-10</b></td><td>19건</td><td class="up"><b>×1.9</b></td><td>31만 · 980</td><td>사회·교육</td><td class="arts"><a href="#">수능 D-10, 수험생 컨디션 관리법</a></td><td><span class="pill p-b">테마 후보</span></td></tr>
+          <tr><td>5</td><td><b>먼작귀 팝업</b></td><td>9건</td><td class="up"><b>×1.8</b></td><td>27만 · 1,540</td><td>유통·문화</td><td class="arts"><a href="#">먼작귀 팝업 오픈런…3일간 2만 명</a><a href="#">캐릭터 IP 매출 1조 시대</a></td><td><span class="pill p-b">테마 후보</span></td></tr>
+          <tr><td>6</td><td><b>환율 1500</b></td><td>34건</td><td class="up"><b>×1.6</b></td><td>88만 · 3,100</td><td>경제·금융</td><td class="arts"><a href="#">원·달러 환율 1500원 눈앞</a></td><td><span class="pill p-gr">관찰</span></td></tr>
+          <tr><td>—</td><td><s>○○ 의원 논란</s></td><td>27건</td><td>×4.1</td><td>—</td><td>정치</td><td>—</td><td><span class="pill p-r">자동 제외 · 정치</span></td></tr>
+          <tr><td>—</td><td><s>○○ 화재 사고</s></td><td>15건</td><td>×3.0</td><td>—</td><td>사회</td><td>—</td><td><span class="pill p-r">자동 제외 · 사고</span></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- 테마 후보 -->
+    <div class="page" id="theme">
+      <div class="top"><h1>테마 후보</h1><small>11월 2주 발행분 · 후보 8개 중 3~5개 선택 · 선택 3 / 5</small></div>
+      <div class="cand">
+        <div class="card"><span class="pill p-g">선택됨 · 그대로 이어가기</span><h3>당신의 월급 증발 유형</h3><div class="score">점수 92</div><div class="bar"><b style="width:92%"></b></div><div class="why">기사 ×2.4 유지 · 지난 주 완료율 76%로 최고 · <b style="color:var(--warn)">11월 1주 발행 테스트와 동일</b> → 지난 테스트를 다시 올림, 12,480명 누적</div><div class="arts"><a href="#">"월급 빼고 다 올랐다"…10월 소비자물가 3.4%↑</a><a href="#">2030 "고정비가 월급의 절반"</a><a href="#">급여일 직후 소비 몰림…카드 데이터</a></div><button class="btn" onclick="toast('선택 해제')">선택 해제</button></div>
+        <div class="card"><span class="pill p-y">생성 중 → 승인 대기</span><h3>회식 자리 생존 유형</h3><div class="score">점수 87</div><div class="bar"><b style="width:87%"></b></div><div class="why">연말 시즌 + 회식 기피 기사 결합 · 직장인 공감 소재</div><div class="arts"><a href="#">"회식도 업무"…MZ 직장인 61% "불참 눈치"</a><a href="#">송년회 예약 전년比 18%↑</a><a href="#">회식비 지원 늘리는 기업들</a></div><button class="btn" onclick="go('gen',document.querySelectorAll('nav a')[3])">승인 화면으로</button></div>
+        <div class="card" style="border-color:#fbbf24"><span class="pill p-y">이어서 발행 후보</span><h3>코스피 4000 멘탈 유형</h3><div class="score">점수 85</div><div class="bar"><b style="width:85%"></b></div><div class="why">조회 210만 · 2주 연속 급상승 · <b style="color:var(--warn)">11월 1주 발행 테스트와 유사도 91%</b></div><div class="arts"><a href="#">코스피 4000 안착…외국인 "아직 싸다"</a><a href="#">개미 추격 매수 2주째…빚투 급증</a></div><div class="cont"><div class="warn">⚠ 비슷한 테스트가 지난 주에 있습니다. 어떻게 할까요?</div><label><input type="radio" name="k" onclick="toast('그대로 이어가기 · 참여자 누적')"><span>그대로 이어가기<br><small>지난 테스트를 이번 주 목록에 다시 올림. 15,760명 누적</small></span></label><label><input type="radio" name="k" checked><span>이번 주 버전<br><small>유형 유지, 문항만 이번 주 기사로 갱신. 재참여자에게 "지난주 vs 이번주" 비교</small></span></label><label><input type="radio" name="k" onclick="toast('시리즈 확장 · 2편 생성')"><span>시리즈 확장 (2편)<br><small>"코스피 4000 물타기 유형" 새 각도로 생성, 1편 결과와 짝 표시</small></span></label><label><input type="radio" name="k" onclick="toast('이번 주 제외')"><span>이번 주는 제외</span></label></div><button class="btn pri" onclick="toast('이번 주 버전으로 선택됨')">이대로 선택</button></div>
+        <div class="card"><span class="pill p-gr">후보</span><h3>수능 전날의 나 유형</h3><div class="score">점수 71</div><div class="bar"><b style="width:71%"></b></div><div class="why">시즌 소재 · 세대 폭 넓음 · 기사 수는 적음</div><div class="arts"><a href="#">수능 D-10, 수험생 컨디션 관리법</a></div><button class="btn pri" onclick="toast('선택 4 / 5')">선택</button></div>
+        <div class="card"><span class="pill p-gr">후보</span><h3>환율 1500 시대 소비 유형</h3><div class="score">점수 64</div><div class="bar"><b style="width:64%"></b></div><div class="why">기사 ×1.6 · 경제 테마 중복 가능성</div><div class="arts"><a href="#">원·달러 환율 1500원 눈앞</a></div><button class="btn pri" onclick="toast('선택 4 / 5')">선택</button></div>
+        <div class="card"><span class="pill p-gr">후보</span><h3>먼작귀 세계관으로 보는 직장 유형</h3><div class="score">점수 68</div><div class="bar"><b style="width:68%"></b></div><div class="why">캐릭터 IP 급상승 · 젊은 세대 신호 강함 · <b style="color:var(--warn)">IP 주의: 캐릭터 이미지 자체 제작</b></div><div class="arts"><a href="#">먼작귀 팝업 오픈런…3일간 2만 명</a><a href="#">캐릭터 IP 매출 1조 시대</a></div><button class="btn pri" onclick="toast('선택 4 / 5 · IP 검수 항목 강화')">선택</button></div>
+        <div class="card" style="border-style:dashed;align-items:center;justify-content:center;color:var(--muted)"><div style="text-align:center">상시 테마 뱅크에서 꺼내기<br><button class="btn sm" style="margin-top:8px" onclick="toast('상시 테마 20개 목록')">열기</button></div></div>
+      </div>
+      <div class="actions"><button class="btn pri" onclick="toast('선택한 3개 생성 요청 · 약 10분 소요')">선택 테마 일괄 생성</button></div>
+    </div>
+
+    <!-- 생성·검수·승인 -->
+    <div class="page" id="gen">
+      <div class="top"><h1>생성 · 검수 · 승인</h1><small>11월 2주 발행분 · 회식 자리 생존 유형 · 생성 08:40 · 소요 2분 48초</small></div>
+      <div class="grid2">
+        <div>
+          <div class="card">
+            <h2>문항 8개 <small>AI 생성 · 클릭해서 수정</small></h2>
+            <div class="q"><b>Q1. 회식 공지가 떴다. 첫 반응은?</b><span>① 오늘 뭐 먹지</span><span>② 몇 시에 끝나지</span><span>③ 빠질 핑계 검색</span><span>④ 2차 장소 미리 물색</span></div>
+            <div class="q"><b>Q2. 자리 배치에서 당신의 위치는?</b><span>① 부장님 옆</span><span>② 출구 근처</span><span>③ 동기들 사이</span><span>④ 상관없음</span></div>
+            <div class="q"><b>Q3. 건배사를 시켰다.</b><span>① 준비된 멘트 있음</span><span>② 짧게 치고 빠짐</span><span>③ 옆 사람에게 넘김</span><span>④ 분위기 띄움</span></div>
+            <div class="q" style="color:var(--muted)">Q4 ~ Q8 …</div>
+          </div>
+          <div class="card">
+            <h2>결과 유형 8개</h2>
+            <div class="types">
+              <div><em>🎤</em><b>분위기 메이커형</b>회식의 주인공</div>
+              <div><em>🚪</em><b>출구 전략형</b>1차에서 사라짐</div>
+              <div><em>🍖</em><b>고기 집중형</b>말보다 젓가락</div>
+              <div><em>📱</em><b>조용한 관찰형</b>구석에서 폰</div>
+              <div><em>🍻</em><b>2차 선봉형</b>진짜는 지금부터</div>
+              <div><em>🧾</em><b>법카 수호형</b>계산대 앞 긴장</div>
+              <div><em>🤝</em><b>상사 밀착형</b>네트워킹의 기회</div>
+              <div><em>🏃</em><b>칼퇴 수호형</b>애초에 안 감</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card check">
+            <h2>자동 검수 결과 <small>통과 6 · 주의 1</small></h2>
+            <ul>
+              <li class="ok">유형 분포 균형 (시뮬레이션 1만 회, 최소 유형 7%)<span class="pill p-g">통과</span></li>
+              <li class="ok">모든 유형 도달 가능<span class="pill p-g">통과</span></li>
+              <li class="ok">금칙어 없음<span class="pill p-g">통과</span></li>
+              <li class="ok">실존 기업·인물 언급 없음<span class="pill p-g">통과</span></li>
+              <li class="ok">투자 권유성 문장 없음<span class="pill p-g">통과</span></li>
+              <li class="ok">타사 캐릭터·작품 IP 직접 사용 없음<span class="pill p-g">통과</span></li>
+              <li class="warn">Q6 보기 ③ "술 못 마시면 승진 못 해" 표현 검토 필요<span class="pill p-y">주의</span></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>결과에 붙는 관련 기사</h2>
+            <table>
+              <tr><td>기사 1</td><td>"회식도 업무"…MZ 직장인 61% "불참 눈치" <span class="pill p-g">자동</span></td></tr>
+              <tr><td>기사 2</td><td>송년회 예약 전년比 18%↑ <span class="pill p-g">자동</span></td></tr>
+              <tr><td>기사 3</td><td>회식비 지원 늘리는 기업들 <span class="pill p-g">자동</span></td></tr>
+            </table>
+          </div>
+          <div class="card">
+            <h2>공유 카드 미리보기</h2>
+            <div style="background:linear-gradient(135deg,#fef3c7,#fca5a5);border-radius:12px;padding:20px;text-align:center"><div style="font-size:40px">🚪</div><b style="font-size:18px">출구 전략형</b><div style="font-size:12px;color:#374151;margin-top:4px">참여자의 14% · 한국경제</div></div>
+            <div class="actions"><button class="btn" onclick="window.open('service.html')">서비스 화면 미리보기</button></div>
+          </div>
+          <div class="card">
+            <h2>승인</h2>
+            <textarea rows="2" placeholder="반려 사유 또는 수정 메모"></textarea>
+            <div class="actions"><button class="btn" onclick="toast('AI 재생성 요청 · Q6 수정')">반려 · 재생성</button><button class="btn ok" onclick="toast('승인 완료 · 11/10 09:00 이번 주 묶음에 포함')">승인 · 발행 예약</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 발행 관리 -->
+    <div class="page" id="pub">
+      <div class="top"><h1>발행 관리</h1><small>매주 월요일 09:00 "이번 주 테스트" 묶음 발행</small></div>
+      <div class="card">
+        <table>
+          <tr><th>주차</th><th>테스트</th><th>테마 출처</th><th>발행 일시</th><th>상태</th><th></th></tr>
+          <tr><td rowspan="3"><b>11월 2주</b><br><small style="color:var(--muted)">11/10 예약</small></td><td><b>회식 자리 생존 유형</b></td><td>연말 회식 (×2.7)</td><td>11/10 09:00 예약</td><td><span class="pill p-y">승인 대기</span></td><td><button class="btn sm">검토</button></td></tr>
+                    <tr><td><b>코스피 4000 멘탈 유형</b> <span class="pill p-y">이번 주 버전</span></td><td>코스피 4000 (2주 연속)</td><td>11/10 09:00 예약</td><td><span class="pill p-b">문항 갱신 중</span></td><td></td></tr>
+          <tr><td><b>당신의 월급 증발 유형</b> <span class="pill p-gr">이어가기</span></td><td>월급·물가 (2주 연속)</td><td>11/10 09:00 예약</td><td><span class="pill p-g">재게시 예약</span></td><td></td></tr>
+          <tr><td rowspan="4"><b>11월 1주</b><br><small style="color:var(--muted)">11/03 발행</small></td><td><b>당신의 월급 증발 유형</b></td><td>월급·물가 (×3.2)</td><td>11/03 09:00</td><td><span class="pill p-g">발행 중</span></td><td><button class="btn sm" onclick="window.open('service.html')">보기</button></td></tr>
+          <tr><td><b>회식 자리 생존 유형</b></td><td>연말 회식 (×2.7)</td><td>11/03 09:00</td><td><span class="pill p-g">발행 중</span></td><td><button class="btn sm">보기</button></td></tr>
+          <tr><td><b>코스피 4000 멘탈 유형</b></td><td>코스피 4000 (×2.1)</td><td>11/03 09:00</td><td><span class="pill p-g">발행 중</span></td><td><button class="btn sm">보기</button></td></tr>
+          <tr><td><b>수능 전날의 나 유형</b></td><td>수능 시즌 (×1.9)</td><td>11/03 09:00</td><td><span class="pill p-g">발행 중</span></td><td><button class="btn sm">보기</button></td></tr>
+          <tr><td rowspan="2"><b>10월 5주</b><br><small style="color:var(--muted)">10/27 발행</small></td><td><b>폭락장 멘탈 유형</b></td><td>코스피 급락 (×5.4)</td><td>10/27 09:00</td><td><span class="pill p-gr">아카이브</span></td><td><button class="btn sm">보기</button></td></tr>
+          <tr><td><b>연말정산 성향 유형</b></td><td>시즌 (연말정산)</td><td>10/27 09:00</td><td><span class="pill p-gr">아카이브</span></td><td><button class="btn sm">보기</button></td></tr>
+          <tr><td><b>10월 4주</b><br><small style="color:var(--muted)">10/20 발행</small></td><td><b>당신을 종목으로 표현하면</b></td><td>상시 테마 뱅크</td><td>10/20 09:00</td><td><span class="pill p-gr">아카이브</span></td><td><button class="btn sm">보기</button></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- 성과 -->
+    <div class="page" id="perf">
+      <div class="top"><h1>성과</h1><small>MVP 판단 기준 대비 · 최근 4주</small></div>
+      <div class="kpis">
+        <div class="kpi"><div class="l">완료율 (목표 70%)</div><div class="v up">73%</div><div class="d">달성</div></div>
+        <div class="kpi"><div class="l">공유 클릭률 (목표 10%)</div><div class="v up">12.6%</div><div class="d">달성</div></div>
+        <div class="kpi"><div class="l">공유 유입 (목표 30%)</div><div class="v up">33%</div><div class="d">달성</div></div>
+        <div class="kpi"><div class="l">주당 발행 (목표 3건↑)</div><div class="v up">3.5건</div><div class="d">달성 · 4주 14건</div></div>
+        <div class="kpi"><div class="l">주당 사람 시간 (목표 30분↓)</div><div class="v up">26분</div><div class="d">달성</div></div>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h2>테스트별 성과</h2>
+          <table>
+            <tr><th>테스트</th><th>참여</th><th>완료</th><th>공유</th><th>기사 클릭</th><th>25~34세</th></tr>
+            <tr><td>폭락장 멘탈 유형</td><td>31,200</td><td>71%</td><td>15.8%</td><td>24%</td><td>41%</td></tr>
+            <tr><td>월급 증발 유형</td><td>12,480</td><td>76%</td><td>13.2%</td><td>21%</td><td>47%</td></tr>
+            <tr><td>연말정산 성향</td><td>8,110</td><td>69%</td><td>9.4%</td><td>12%</td><td>33%</td></tr>
+            <tr><td>종목으로 표현하면</td><td>6,900</td><td>78%</td><td>11.0%</td><td>9%</td><td>38%</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h2>생성 피드백 <small>반응 좋은 문항 → 다음 생성 참고</small></h2>
+          <table>
+            <tr><th>문항</th><th>이탈률</th><th>처리</th></tr>
+            <tr><td>"퇴근길, 오늘따라 유난히 힘들었다"</td><td class="up">1.2%</td><td><span class="pill p-g">참고 예시 편입</span></td></tr>
+            <tr><td>"갑자기 보너스 100만 원이 생겼다"</td><td class="up">1.8%</td><td><span class="pill p-g">참고 예시 편입</span></td></tr>
+            <tr><td>"연말정산 간소화 서비스에서…"</td><td class="dn">9.4%</td><td><span class="pill p-r">용어 난이도 높음 · 제외</span></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+function go(id,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.getElementById(id).classList.add('on');document.querySelectorAll('nav a').forEach(a=>a.classList.remove('on'));if(el)el.classList.add('on');window.scrollTo(0,0)}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',1800)}
+</script>
+</body>
+</html>
